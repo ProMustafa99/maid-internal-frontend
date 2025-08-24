@@ -9,6 +9,11 @@ import { createTheme } from '@mui/material/styles';
 import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
+import Dashboard from '../../pages/Dashboard';
+import Maids from '../../pages/Maids';
+import Leads from '../../pages/Leads';
+import Notifiaction from '../../pages/Notifiaction';
+import Settings from '../../pages/Settings';
 
 const NAVIGATION: Navigation = [
   {
@@ -85,19 +90,24 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }: { pathname: string }) {
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      <Typography>Dashboard content for {pathname}</Typography>
-    </Box>
-  );
+  // Extract the segment from the pathname
+  const segment = pathname.split('/').pop() || 'dashboard';
+  
+  // Render the appropriate component based on the segment
+  switch (segment) {
+    case 'dashboard':
+      return <Dashboard />;
+    case 'maids':
+      return <Maids />;
+    case 'leads':
+      return <Leads />;
+    case 'notifications':
+      return <Notifiaction />;
+    case 'settings':
+      return <Settings />;
+    default:
+      return <Dashboard />;
+  }
 }
 
 interface DemoProps {
