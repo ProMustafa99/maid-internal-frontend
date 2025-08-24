@@ -1,7 +1,7 @@
-import DashboardLayoutBasic from "./component/Dashboard/DashboardLayoutBasic";
+import MainLayoutBasic from "./component/mainLayout/MainLayoutBasic";
 
 export default function App() {
   return (
-    <DashboardLayoutBasic/>
+    <MainLayoutBasic/>
   );
 }
