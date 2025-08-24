@@ -3,15 +3,13 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
 import Dashboard from '../../pages/Dashboard';
-import Maids from '../../pages/Maids';
 import Leads from '../../pages/Leads';
+import Maids from '../../pages/Maids';
 import Notifiaction from '../../pages/Notifiaction';
 import Settings from '../../pages/Settings';
 
