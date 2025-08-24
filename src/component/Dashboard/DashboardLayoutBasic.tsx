@@ -1,5 +1,6 @@
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -35,6 +36,11 @@ const NAVIGATION: Navigation = [
     icon: <AssignmentIcon />,
   },
 
+  {
+    segment: 'team ',
+    title: 'Team',
+    icon: <GroupIcon />,
+  },
   {
     segment: 'notifications',
     title: 'Notifications',
