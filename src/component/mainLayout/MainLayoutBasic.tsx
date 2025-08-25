@@ -13,6 +13,7 @@ import Leads from '../../pages/Leads';
 import Maids from '../../pages/Maids';
 import Notifiaction from '../../pages/Notifiaction';
 import Settings from '../../pages/Settings';
+import TeamMembers from '../../pages/TeamMembers';
 
 const NAVIGATION: Navigation = [
   {
@@ -37,7 +38,7 @@ const NAVIGATION: Navigation = [
   },
 
   {
-    segment: 'team ',
+    segment: 'team',
     title: 'Team',
     icon: <GroupIcon />,
   },
@@ -105,6 +106,8 @@ function DemoPageContent({ pathname }: { pathname: string }) {
       return <Maids />;
     case 'leads':
       return <Leads />;
+    case 'team':
+      return <TeamMembers />;
     case 'notifications':
       return <Notifiaction />;
     case 'settings':
