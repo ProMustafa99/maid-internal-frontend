@@ -1,114 +1,88 @@
 import axios from 'axios';
+import { axiosInstance } from '../axiosInstance';
+import { useQuery } from '@tanstack/react-query';
 
-// Define the User interface based on actual API response
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone: string | null;
-  gender: string;
-  country_id: number;
-  role_id: number;
-  agency_id: number | null;
-  record_status: number;
-  created_at: string;
-  created_by: number | null;
-}
-
-// Define the API response interface based on actual structure
-export interface UsersResponse {
-  data: {
-    columns: string[];
-    data: User[];
-    totalCount: number;
+export const getSubUsers = async (page: number): Promise<any> => {
+    try {      
+      const response = await axiosInstance.get(
+        `/users?page=${page}`,
+      );
+      console.log("response", response);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data?.message || "Sub users fetch failed"
+        );
+      }
+      throw error;
+    }
   };
-  message: string;
-}
 
-// Create axios instance with base URL from environment variable
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Function to get all users
-export const getUsers = async (): Promise<UsersResponse> => {
-  try {
-    const response = await api.get<UsersResponse>('/users');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    throw error;
-  }
+// React Query hook for fetching users
+export const useUsers = (page: number = 1) => {
+  return useQuery({
+    queryKey: ['users', page],
+    queryFn: () => getSubUsers(page),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+  });
 };
 
-// Helper function to get just the users array
-export const getUsersList = async (): Promise<User[]> => {
-  try {
-    const response = await getUsers();
-    return response.data.data;
-  } catch (error) {
-    console.error('Error fetching users list:', error);
-    throw error;
-  }
-};
-
-// Helper function to get total count of users
-export const getUsersCount = async (): Promise<number> => {
-  try {
-    const response = await getUsers();
-    return response.data.totalCount;
-  } catch (error) {
-    console.error('Error fetching users count:', error);
-    throw error;
-  }
+// React Query hook for fetching a single user
+export const useUser = (id: number) => {
+  return useQuery({
+    queryKey: ['user', id],
+    queryFn: () => getUserById(id),
+    enabled: !!id, // Only run query if id exists
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 };
 
 // Function to get a single user by ID
-export const getUserById = async (id: string): Promise<User> => {
+export const getUserById = async (id: number): Promise<any> => {
   try {
-    const response = await api.get<User>(`/users/${id}`);
+    const response = await axiosInstance.get(`/users/${id}`);
     return response.data;
   } catch (error) {
-    console.error(`Error fetching user with ID ${id}:`, error);
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "User fetch failed"
+      );
+    }
     throw error;
   }
 };
 
-// Function to create a new user
-export const createUser = async (userData: Omit<User, 'id' | 'created_at' | 'created_by'>): Promise<User> => {
-  try {
-    const response = await api.post<User>('/users', userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw error;
-  }
-};
+// Example of how to use React Query for mutations
+// You can add these to your components when you need them:
 
-// Function to update a user
-export const updateUser = async (id: string, userData: Partial<User>): Promise<User> => {
-  try {
-    const response = await api.put<User>(`/users/${id}`, userData);
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating user with ID ${id}:`, error);
-    throw error;
-  }
-};
+/*
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-// Function to delete a user
-export const deleteUser = async (id: string): Promise<void> => {
-  try {
-    await api.delete(`/users/${id}`);
-  } catch (error) {
-    console.error(`Error deleting user with ID ${id}:`, error);
-    throw error;
-  }
-};
+// In your component:
+const queryClient = useQueryClient();
 
-// Export the api instance for custom requests
-export { api };
+const createUserMutation = useMutation({
+  mutationFn: (userData) => createUser(userData),
+  onSuccess: () => {
+    // Invalidate and refetch users list
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+});
+
+const updateUserMutation = useMutation({
+  mutationFn: ({ id, userData }) => updateUser(id, userData),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+});
+
+const deleteUserMutation = useMutation({
+  mutationFn: (id) => deleteUser(id),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+});
+*/
+
