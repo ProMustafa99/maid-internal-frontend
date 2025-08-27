@@ -11,6 +11,14 @@ type DynamicTableProps = {
   rows: any;
 };
 
+// Helper function to format column headers
+const formatColumnHeader = (column: string): string => {
+  return column
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
 export default function DynamicTable({ columns, rows }: DynamicTableProps) {
   return (
     <TableContainer component={Paper}>
@@ -27,7 +35,7 @@ export default function DynamicTable({ columns, rows }: DynamicTableProps) {
                   padding: "24px 24px",
                 }}
               >
-                {column}
+                {formatColumnHeader(column)}
               </TableCell>
             ))}
           </TableRow>
