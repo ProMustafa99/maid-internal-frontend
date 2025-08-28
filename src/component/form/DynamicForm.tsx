@@ -1,5 +1,6 @@
 import Button from "../common/Button";
 import Input from "../common/Input";
+import Select from "../common/Select";
 import { useState } from "react";
 
 interface DynamicFormProps {
@@ -15,12 +16,14 @@ interface DynamicFormProps {
     };
     value: string | number | undefined;
     error: string;
+    options?: Array<{ value: string; label: string }>;
   }>;
   onFormChange?: (formData: Record<string, any>) => void;
   onValidate?: (isValid: boolean, errors: Record<string, string>) => void;
+  buttonTitle: string;
 }
 
-export default function DynamicForm({ formFields, onFormChange, onValidate }: DynamicFormProps) {
+export default function DynamicForm({ formFields, onFormChange, onValidate, buttonTitle }: DynamicFormProps) {
   const [formData, setFormData] = useState<Record<string, any>>(() => {
     const initialData: Record<string, any> = {};
     formFields.forEach(field => {
@@ -77,24 +80,38 @@ export default function DynamicForm({ formFields, onFormChange, onValidate }: Dy
     <div className="">
       {formFields.map((field) => (
         <div key={field.name} className="mb-4">
-          <Input
-            label={field.label}
-            name={field.name}
-            type={field.type}
-            placeholder={field.placeholder}
-            required={field.validation.required}
-            className="mb-4"
-            value={formData[field.name] || ''}
-            error={hasValidated ? errors[field.name] || '' : field.error}
-            onChange={(e) => handleInputChange(field.name, e.target.value)}
-          />
+          {field.type === 'select' ? (
+            <Select
+              label={field.label}
+              name={field.name}
+              value={formData[field.name] || ''}
+              options={field.options || []}
+              placeholder={field.placeholder}
+              required={field.validation.required}
+              className="mb-4"
+              error={hasValidated ? errors[field.name] || '' : field.error}
+              onChange={(e) => handleInputChange(field.name, e.target.value)}
+            />
+          ) : (
+            <Input
+              label={field.label}
+              name={field.name}
+              type={field.type}
+              placeholder={field.placeholder}
+              required={field.validation.required}
+              className="mb-4"
+              value={formData[field.name] || ''}
+              error={hasValidated ? errors[field.name] || '' : field.error}
+              onChange={(e) => handleInputChange(field.name, e.target.value)}
+            />
+          )}
         </div>
       ))}
       
       {/* Validation Button */}
       <div className="mt-6">
         <Button
-          title="Validate Form"
+          title={buttonTitle}
           onClick={validateForm}
           color="primary"
           variant="solid"

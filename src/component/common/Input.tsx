@@ -1,24 +1,26 @@
 import React, { forwardRef } from 'react';
+import { TextField } from '@mui/material';
+import type { TextFieldProps } from '@mui/material';
 
-export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface InputProps extends Omit<TextFieldProps, 'size' | 'error' | 'helperText'> {
   label?: string;
   error?: string;
   icon?: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'outlined' | 'filled';
+  size?: 'small' | 'medium';
+  variant?: 'outlined' | 'filled' | 'standard';
   fullWidth?: boolean;
   helperText?: string;
   required?: boolean;
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLDivElement, InputProps>(
   (
     {
       label,
       error,
       icon,
-      size = 'md',
-      variant = 'default',
+      size = 'medium',
+      variant = 'outlined',
       fullWidth = true,
       helperText,
       required = false,
@@ -27,71 +29,84 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const sizeClasses = {
-      sm: 'px-3 py-2 text-sm',
-      md: 'px-3 py-3 text-sm',
-      lg: 'px-4 py-4 text-base',
-    };
-
-    const variantClasses = {
-      default: 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
-      outlined: 'border-2 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
-      filled: 'border-gray-300 bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-indigo-500',
-    };
-
-    const errorClasses = error
-      ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-      : variantClasses[variant];
-
-    const baseClasses = `
-      block w-full border rounded-xl shadow-sm placeholder-gray-400 
-      focus:outline-none focus:ring-2 focus:ring-offset-0 transition-all duration-200
-      ${sizeClasses[size]}
-      ${errorClasses}
-      ${fullWidth ? 'w-full' : ''}
-      ${className}
-    `;
-
     return (
-      <div className={`${fullWidth ? 'w-full' : ''}`}>
-        {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
-          </label>
-        )}
-        
-        <div className="relative">
-          {icon && (
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <div className="h-5 w-5 text-gray-400">
-                {icon}
-              </div>
+      <TextField
+        ref={ref}
+        label={label}
+        variant={variant}
+        size={size}
+        fullWidth={fullWidth}
+        required={required}
+        error={!!error}
+        helperText={error || helperText}
+        className={className}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '16px',
+            backgroundColor: 'white',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              backgroundColor: '#f8fafc',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            },
+            '&.Mui-focused': {
+              backgroundColor: 'white',
+              transform: 'translateY(-1px)',
+              boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04)',
+            },
+            '& fieldset': {
+              borderColor: error ? '#ef4444' : '#e2e8f0',
+              borderWidth: '2px',
+              transition: 'all 0.3s ease',
+            },
+            '&:hover fieldset': {
+              borderColor: error ? '#ef4444' : '#3b82f6',
+              borderWidth: '2px',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: error ? '#ef4444' : '#3b82f6',
+              borderWidth: '3px',
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#64748b',
+            fontWeight: '500',
+            fontSize: '0.875rem',
+            '&.Mui-focused': {
+              color: error ? '#ef4444' : '#3b82f6',
+              fontWeight: '600',
+            },
+          },
+          '& .MuiFormHelperText-root': {
+            marginLeft: '4px',
+            fontSize: '0.75rem',
+            fontWeight: '500',
+            '&.Mui-error': {
+              color: '#ef4444',
+              fontWeight: '600',
+            },
+          },
+          '& .MuiInputBase-input': {
+            padding: size === 'small' ? '12px 16px' : '16px 20px',
+            fontSize: size === 'small' ? '0.875rem' : '1rem',
+            fontWeight: '500',
+            color: '#1e293b',
+            '&::placeholder': {
+              color: '#94a3b8',
+              opacity: 1,
+            },
+          },
+        }}
+        InputProps={{
+          startAdornment: icon ? (
+            <div className="mr-3 text-gray-400">
+              {icon}
             </div>
-          )}
-          
-          <input
-            ref={ref}
-            className={`${baseClasses} ${icon ? 'pl-10' : ''}`}
-            {...props}
-          />
-        </div>
-
-        {error && (
-          <p className="mt-2 text-sm text-red-600 flex items-center">
-            <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            {error}
-          </p>
-        )}
-
-        {helperText && !error && (
-          <p className="mt-2 text-sm text-gray-500">
-            {helperText}
-          </p>
-        )}
-      </div>
+          ) : undefined,
+        }}
+        {...props}
+      />
     );
   }
 );

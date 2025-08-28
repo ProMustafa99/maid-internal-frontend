@@ -39,17 +39,17 @@ export default function TeamMembers() {
 
   const formFields = [
     {
-      name: "user_name",
+      name: "name",
       type: "text",
-      label: "User Name",
-      placeholder: "Enter your name",
+      label: "Full Name",
+      placeholder: "Enter your full name",
       required: true,
       validation: {
         required: true,
-        minLength: 3,
-        maxLength: 20,
+        minLength: 1,
+        maxLength: 255,
       },
-      value: "test",
+      value: "",
       error: "",
     },
     {
@@ -57,10 +57,11 @@ export default function TeamMembers() {
       type: "email",
       label: "Email Address",
       placeholder: "Enter your email",
+      required: true,
       validation: {
         required: true,
-        minLength: 3,
-        maxLength: 20,
+        minLength: 1,
+        maxLength: 255,
       },
       value: "",
       error: "",
@@ -70,36 +71,95 @@ export default function TeamMembers() {
       type: "password",
       label: "Password",
       placeholder: "Enter your password",
+      required: true,
       validation: {
         required: true,
-        minLength: 3,
+        minLength: 9,
+        maxLength: 32,
+      },
+      value: "",
+      error: "",
+    },
+    {
+      name: "phone",
+      type: "tel",
+      label: "Phone Number",
+      placeholder: "Enter your phone number",
+      required: false,
+      validation: {
+        required: false,
+        minLength: 1,
         maxLength: 20,
       },
       value: "",
       error: "",
     },
     {
-      name: "age",
+      name: "gender",
+      type: "select",
+      label: "Gender",
+      placeholder: "Select your gender",
+      required: false,
+      validation: {
+        required: false,
+        minLength: 1,
+        maxLength: 10,
+      },
+      options: [
+        { value: "Female", label: "Female" },
+        { value: "Male", label: "Male" },
+      ],
+      value: "",
+      error: "",
+    },
+    {
+      name: "country_id",
+      type: "select",
+      label: "Country",
+      placeholder: "Select your country",
+      required: false,
+      validation: {
+        required: false,
+        minLength: 1,
+        maxLength: 999,
+      },
+      value: "",
+      error: "",
+      options: [
+        { value: "jordan", label: "Jordan" },
+        { value: "saudi", label: "Saudi Arabia" },
+        { value: "kuwait", label: "Kuwait" },
+        { value: "qatar", label: "Qatar" },
+        { value: "oman", label: "Oman" },
+        { value: "bahrain", label: "Bahrain" },
+        { value: "emirates", label: "United Arab Emirates" },
+        { value: "other", label: "Other" },
+      ],
+    },
+    {
+      name: "role_id",
       type: "number",
-      label: "Age",
-      placeholder: "Enter your age",
+      label: "Role ID",
+      placeholder: "Enter role ID",
+      required: true,
       validation: {
-        required: false,
-        minLength: 3,
-        maxLength: 20,
+        required: true,
+        minLength: 1,
+        maxLength: 999,
       },
       value: "",
       error: "",
     },
     {
-      name: "bio",
-      type: "textarea",
-      label: "Bio",
-      placeholder: "Tell us about yourself",
+      name: "agency_id",
+      type: "number",
+      label: "Agency ID",
+      placeholder: "Enter agency ID",
+      required: false,
       validation: {
         required: false,
-        minLength: 3,
-        maxLength: 20,
+        minLength: 1,
+        maxLength: 999,
       },
       value: "",
       error: "",
@@ -137,8 +197,7 @@ export default function TeamMembers() {
         fullScreen={false}
       >
         <div className="space-y-6">
-
-          <DynamicForm formFields={formFields} />
+          <DynamicForm formFields={formFields} buttonTitle="Add Member" />
         </div>
       </Dialog>
     </div>
