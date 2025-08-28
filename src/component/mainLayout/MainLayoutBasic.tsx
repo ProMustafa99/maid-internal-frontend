@@ -4,10 +4,12 @@ import GroupIcon from '@mui/icons-material/Group';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { createTheme } from '@mui/material/styles';
 import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
+import { useAuth } from '../context/auth-context';
 import Dashboard from '../../pages/Dashboard';
 import Leads from '../../pages/Leads';
 import Maids from '../../pages/Maids';
@@ -53,6 +55,11 @@ const NAVIGATION: Navigation = [
     title: 'Settings',
     icon: <SettingsIcon />,
   },
+  {
+    segment: 'logout',
+    title: 'Logout',
+    icon: <LogoutIcon />,
+  },
  
   // {
   //   segment: 'reports',
@@ -95,8 +102,16 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }: { pathname: string }) {
+  const { logout } = useAuth();
+  
   // Extract the segment from the pathname
   const segment = pathname.split('/').pop() || 'dashboard';
+  
+  // Handle logout
+  if (segment === 'logout') {
+    logout();
+    return <Dashboard />;
+  }
   
   // Render the appropriate component based on the segment
   switch (segment) {

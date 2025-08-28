@@ -1,132 +1,119 @@
-// import {
-//   createContext,
-//   ReactNode,
-//   useContext,
-//   useEffect,
-//   useState,
-// } from "react";
-// import Toast from "../components/common/Toast";
-// import { RegisterCredentials } from "../interface/register";
-// import {
-//   checkAuthApi,
-//   loginApi,
-//   logoutApi,
-//   registerApi,
-// } from "../lib/api/auth";
-// import { useLanguage } from "./language-context";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { authAPI, type LoginCredentials } from '../../api/auth';
 
-// interface User {
-//   id: string;
-//   email: string;
-//   name?: string;
-//   display_name?: string;
-//   role_id: number;
-//   role: string;
-// }
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  gender: string;
+  country_id: number;
+  role_id: number;
+  agency_id: number | null;
+  record_status: number;
+  created_at: string;
+  created_by: number | null;
+}
 
-// interface AuthContextType {
-//   user: User | null;
-//   login: (email: string, password: string) => Promise<void>;
-//   logout: () => Promise<void>;
-//   emptyUser: () => void;
-//   isLoading: boolean;
-//   loginError: string | null;
-//   register: (data: any, close: () => void) => Promise<void>;
-// }
 
-// const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// export function AuthProvider({ children }: { children: ReactNode }) {
-//   const [user, setUser] = useState<User | null>(null);
-//   const [loginError, setLoginError] = useState<any>(null);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const { rerender } = useLanguage();
-  
-//   useEffect(() => {
-//     checkAuth();
-//   }, [rerender]);
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+  error: string | null;
+}
 
-//   const checkAuth = async () => {
-//     setIsLoading(true);
-//     try {
-//       const response = await checkAuthApi();
-//       if (response) {
-//         setUser(response.data);
-//       } else {
-//         setUser(null);
-//       }
-//     } catch (error) {
-//       console.error("Current user fetch failed:");
-//       setUser(null);
-//     } finally {
-//       setTimeout(() => {
-//         setIsLoading(false);
-//       }, 300);
-//     }
-//   };
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-//   const login = async (email: string, password: string) => {
-//     try {
-//       const response = await loginApi({ email, password, tenant_id: 1 });
-//       const userData = response.data;
-//       setUser(userData);
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         setLoginError(error.message);
-//         throw error;
-//       }
-//       throw new Error("Login failed");
-//     }
-//   };
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
 
-//   const emptyUser = () => {
-//     setUser(null);
-//   };
+interface AuthProviderProps {
+  children: ReactNode;
+}
 
-//   const logout = async () => {
-//     try {
-//       await logoutApi();
-//       setUser(null);
-//       window.open("/login", "_self");
-//     } catch (error) {
-//       console.error("Logout error:", error);
-//       throw error;
-//     }
-//   };
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-//   const register = async (data: RegisterCredentials, close: () => void) => {
-//     try {
-//       await registerApi(data);
+  // Check if user is already logged in on app start
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+    setIsLoading(false);
+  }, []);
 
-//       Toast({ message: "Registration successful", type: "success" });
-//       close();
-//     } catch (error: any) {
-//       console.error("Registration failed:", error);
-//       Toast({
-//         message: error.response?.data?.message || "Registration failed",
-//         type: "error",
-//       });
-//       throw error;
-//     }
-//   };
+  const login = async (credentials: LoginCredentials) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      const response = await authAPI.login(credentials);
+      
+      console.log('Login response:', response);
+      
+      // Store token and user data
+      localStorage.setItem('token', response.token || '');
+      localStorage.setItem('user', JSON.stringify(response.user));
+      
+      setUser(response.user);
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Login failed');
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-//   const value = {
-//     user,
-//     login,
-//     logout,
-//     emptyUser,
-//     loginError,
-//     register,
-//     isLoading,
-//   };
+  const logout = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Call logout endpoint
+      await authAPI.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear local storage regardless of API call success
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
+      setIsLoading(false);
+    }
+  };
 
-//   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-// }
+  const value: AuthContextType = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    login,
+    logout,
+    error,
+  };
 
-// export function useAuth() {
-//   const context = useContext(AuthContext);
-//   if (context === undefined) {
-//     throw new Error("useAuth must be used within an AuthProvider");
-//   }
-//   return context;
-// }
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
