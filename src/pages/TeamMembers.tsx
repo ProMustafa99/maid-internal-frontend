@@ -6,6 +6,7 @@ import Loading from '../component/common/Loading';
 import type { User } from '../interface/users.interfcae';
 import Header from '../component/common/Header';
 import Paragraph from '../component/common/Paragraph';
+import Button from '../component/common/Button';
 
 export default function TeamMembers() {
   
@@ -34,10 +35,19 @@ export default function TeamMembers() {
 
   return (
     <div className='p-6'>
-      <div className="mb-6">
-        <Header level="h1" size="2xl" weight="bold" color="default" truncate>Team Members</Header>
-        <Paragraph size="md" color="muted">Manage internal team members and their information</Paragraph>
-       
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <Header level="h1" size="2xl" weight="bold" color="default" truncate>Team Members</Header>
+          <Paragraph size="md" color="muted">Manage internal team members and their information</Paragraph>
+        </div>
+        <Button 
+          title="Add New Member" 
+          onClick={() => console.log('Add new member clicked')}
+          color="primary"
+          size="lg"
+          icon="+"
+          iconPosition="left"
+        />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
