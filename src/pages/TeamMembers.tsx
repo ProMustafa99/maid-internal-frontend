@@ -3,6 +3,8 @@ import { getSubUsers } from '../api/teamMember/team_member';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../component/common/Loading';
 import Error from '../component/common/Error';
+import UserCard from '../card/UserCard';
+import type { User } from '../interface/users.interfcae';
 
 export default function TeamMembers() {
   
@@ -47,11 +49,10 @@ export default function TeamMembers() {
         </div>
       </div>
       
-      <div className="bg-white rounded-lg shadow-md">
-        <DynamicTable 
-          columns={columns}
-          rows={users}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {users.map((user: User) => (
+          <UserCard key={user.id} user={user} />
+        ))}
       </div>
     </div>
   );
