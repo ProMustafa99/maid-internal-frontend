@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { axiosInstance } from '../api/axiosInstance';
+import { EmailIcon, LockIcon } from '../component/common/Icons';
+import Input from '../component/common/Input';
+import Header from '../component/common/Header';
+import Paragraph from '../component/common/Paragraph';
 import { useAuth } from '../component/context/auth-context';
 
 const LoginPage: React.FC = () => {
@@ -43,25 +46,7 @@ const LoginPage: React.FC = () => {
       console.error('Login failed:', error);
     }
   };
-
-  const testBackendConnection = async () => {
-    try {
-      console.log('Testing backend connection...');
-      const response = await axiosInstance.get('/');
-      console.log('Backend connection test:', response.data);
-      alert('Backend is running!');
-    } catch (error: any) {
-      console.error('Backend connection test failed:', error);
-      console.error('Error details:', {
-        message: error.message,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data
-      });
-      alert(`Backend connection failed: ${error.message}. Please make sure the backend is running on http://localhost:3000`);
-    }
-  };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
       {/* Background decoration */}
@@ -78,85 +63,48 @@ const LoginPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+          <Header level="h2" size="3xl" weight="bold" color="default" align="center" className="mt-6">
             Welcome back
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          </Header>
+          <Paragraph 
+            size="sm" 
+            color="muted" 
+            align="center" 
+            className="mt-2"
+          >
             Sign in to your account to continue
-          </p>
+          </Paragraph>
         </div>
         
         {/* Login form */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                    </svg>
-                  </div>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 ${
-                      formErrors.email ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                {formErrors.email && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center">
-                    <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {formErrors.email}
-                  </p>
-                )}
-              </div>
+              <Input
+                name="email"
+                type="email"
+                label="Email address"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                error={formErrors.email}
+                icon={<EmailIcon />}
+                required
+                autoComplete="email"
+              />
               
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 ${
-                      formErrors.password ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                {formErrors.password && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center">
-                    <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    {formErrors.password}
-                  </p>
-                )}
-              </div>
+              <Input
+                name="password"
+                type="password"
+                label="Password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                error={formErrors.password}
+                icon={<LockIcon />}
+                required
+                autoComplete="current-password"
+              />
             </div>
 
             {error && (
@@ -209,11 +157,11 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center">
+        {/* <div className="text-center">
           <p className="text-xs text-gray-500">
             © 2024 Maid Internal. All rights reserved.
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
