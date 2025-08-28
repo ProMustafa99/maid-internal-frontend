@@ -7,8 +7,11 @@ import type { User } from '../interface/users.interfcae';
 import Header from '../component/common/Header';
 import Paragraph from '../component/common/Paragraph';
 import Button from '../component/common/Button';
+import Dialog from '../component/common/Dialog';
+import { useState } from 'react';
 
 export default function TeamMembers() {
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['users'],
@@ -42,7 +45,7 @@ export default function TeamMembers() {
         </div>
         <Button 
           title="Add New Member" 
-          onClick={() => console.log('Add new member clicked')}
+          onClick={() => setIsAddMemberDialogOpen(true)}
           color="primary"
           size="lg"
           icon="+"
@@ -55,6 +58,39 @@ export default function TeamMembers() {
           <UserCard key={user.id} user={user} />
         ))}
       </div>
+
+      {/* Add New Member Dialog */}
+      <Dialog
+        open={isAddMemberDialogOpen}
+        onClose={() => setIsAddMemberDialogOpen(false)}
+        title="Add New Team Member"
+        maxWidth="lg"
+      >
+        <div className="space-y-6">
+          <Paragraph size="md" color="muted">
+            This dialog will contain the form to add a new team member.
+          </Paragraph>
+          <div className="flex justify-end space-x-3">
+            <Button
+              title="Cancel"
+              onClick={() => setIsAddMemberDialogOpen(false)}
+              color="secondary"
+              variant="outline"
+              size="md"
+            />
+            <Button
+              title="Add Member"
+              onClick={() => {
+                // Handle adding member logic here
+                console.log('Adding new member...');
+                setIsAddMemberDialogOpen(false);
+              }}
+              color="success"
+              size="md"
+            />
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
