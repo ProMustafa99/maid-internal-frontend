@@ -9,6 +9,7 @@ export interface DialogProps {
   children: React.ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl';
   fullWidth?: boolean;
+  fullScreen?: boolean;
   closeOnBackdropClick?: boolean;
   closeOnEscape?: boolean;
   className?: string;
@@ -21,6 +22,7 @@ const Dialog: React.FC<DialogProps> = ({
   children,
   maxWidth = 'md',
   fullWidth = false,
+  fullScreen = false,
   closeOnBackdropClick = true,
   closeOnEscape = true,
   className = '',
@@ -94,19 +96,25 @@ const Dialog: React.FC<DialogProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className={`fixed inset-0 z-50 overflow-y-auto ${fullScreen ? 'z-[9999]' : ''}`}>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ease-in-out"
+        className={`fixed inset-0 transition-opacity duration-300 ease-in-out ${
+          fullScreen ? 'bg-black bg-opacity-75' : 'bg-black bg-opacity-50'
+        }`}
         onClick={handleBackdropClick}
       />
       
       {/* Dialog Container */}
-      <div className="flex min-h-full items-center justify-center p-4">
+      <div className={`flex min-h-full ${fullScreen ? 'items-start' : 'items-center justify-center p-4'}`}>
         {/* Dialog Content */}
         <div
           ref={dialogRef}
-          className={`relative bg-white rounded-lg shadow-xl transform transition-all duration-300 ease-in-out ${getMaxWidthClass()} ${className}`}
+          className={`relative bg-white shadow-xl transform transition-all duration-300 ease-in-out ${
+            fullScreen 
+              ? 'w-full h-full rounded-none max-w-none' 
+              : `rounded-lg ${getMaxWidthClass()}`
+          } ${className}`}
           tabIndex={-1}
           role="dialog"
           aria-modal="true"
@@ -114,10 +122,12 @@ const Dialog: React.FC<DialogProps> = ({
         >
           {/* Header */}
           {title && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className={`flex items-center justify-between border-b border-gray-200 ${
+              fullScreen ? 'p-8' : 'p-6'
+            }`}>
               <Header 
                 level="h2" 
-                size="lg" 
+                size={fullScreen ? "2xl" : "lg"}
                 weight="semibold" 
                 color="default"
               > 
@@ -141,7 +151,7 @@ const Dialog: React.FC<DialogProps> = ({
           )}
 
           {/* Body */}
-          <div className="p-6">
+          <div className={fullScreen ? 'p-8' : 'p-6'}>
             {children}
           </div>
         </div>

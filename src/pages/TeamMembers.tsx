@@ -9,6 +9,7 @@ import Paragraph from '../component/common/Paragraph';
 import Button from '../component/common/Button';
 import Dialog from '../component/common/Dialog';
 import { useState } from 'react';
+import DynamicForm from '../component/form/DynamicForm';
 
 export default function TeamMembers() {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
@@ -36,6 +37,75 @@ export default function TeamMembers() {
   // const currentPage = data?.data?.currentPage || 1;
   // const count = data?.data?.count || 0;
 
+  const formFields = [
+    {
+      name: "user_name",
+      type: "text",
+      label: "User Name",
+      placeholder: "Enter your name",
+      required: true,
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 20,
+      },
+      value: "test",
+      error: "",
+    },
+    {
+      name: "email",
+      type: "email",
+      label: "Email Address",
+      placeholder: "Enter your email",
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 20,
+      },
+      value: "",
+      error: "",
+    },
+    {
+      name: "password",
+      type: "password",
+      label: "Password",
+      placeholder: "Enter your password",
+      validation: {
+        required: true,
+        minLength: 3,
+        maxLength: 20,
+      },
+      value: "",
+      error: "",
+    },
+    {
+      name: "age",
+      type: "number",
+      label: "Age",
+      placeholder: "Enter your age",
+      validation: {
+        required: false,
+        minLength: 3,
+        maxLength: 20,
+      },
+      value: "",
+      error: "",
+    },
+    {
+      name: "bio",
+      type: "textarea",
+      label: "Bio",
+      placeholder: "Tell us about yourself",
+      validation: {
+        required: false,
+        minLength: 3,
+        maxLength: 20,
+      },
+      value: "",
+      error: "",
+    },
+  ];
+  
   return (
     <div className='p-6'>
       <div className="mb-6 flex justify-between items-center">
@@ -64,31 +134,11 @@ export default function TeamMembers() {
         open={isAddMemberDialogOpen}
         onClose={() => setIsAddMemberDialogOpen(false)}
         title="Add New Team Member"
-        maxWidth="lg"
+        fullScreen={false}
       >
         <div className="space-y-6">
-          <Paragraph size="md" color="muted">
-            This dialog will contain the form to add a new team member.
-          </Paragraph>
-          <div className="flex justify-end space-x-3">
-            <Button
-              title="Cancel"
-              onClick={() => setIsAddMemberDialogOpen(false)}
-              color="secondary"
-              variant="outline"
-              size="md"
-            />
-            <Button
-              title="Add Member"
-              onClick={() => {
-                // Handle adding member logic here
-                console.log('Adding new member...');
-                setIsAddMemberDialogOpen(false);
-              }}
-              color="success"
-              size="md"
-            />
-          </div>
+
+          <DynamicForm formFields={formFields} />
         </div>
       </Dialog>
     </div>
