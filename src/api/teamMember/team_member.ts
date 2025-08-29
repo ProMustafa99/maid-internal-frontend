@@ -1,6 +1,19 @@
 import axios from 'axios';
 import { axiosInstance } from '../axiosInstance';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+// Interface for create user data based on CreateUserDto
+export interface CreateUserData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  gender?: 'Female' | 'Male';
+  country_id?: number;
+  role_id: number;
+  agency_id?: number;
+  record_status?: number;
+}
 
 export const getSubUsers = async (page: number): Promise<any> => {
     try {      
@@ -19,6 +32,21 @@ export const getSubUsers = async (page: number): Promise<any> => {
     }
   };
 
+// Create user API function
+export const createUser = async (userData: CreateUserData): Promise<any> => {
+  try {
+    const response = await axiosInstance.post('/users', userData);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "User creation failed"
+      );
+    }
+    throw error;
+  }
+};
+
 // React Query hook for fetching users
 export const useUsers = (page: number = 1) => {
   return useQuery({
@@ -26,6 +54,22 @@ export const useUsers = (page: number = 1) => {
     queryFn: () => getSubUsers(page),
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
+  });
+};
+
+// React Query hook for creating users
+export const useCreateUser = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      // Invalidate and refetch users list after successful creation
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (error) => {
+      console.error('Error creating user:', error);
+    },
   });
 };
 

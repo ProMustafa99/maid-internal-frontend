@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSubUsers } from '../api/teamMember/team_member';
+import { getSubUsers, useCreateUser } from '../api/teamMember/team_member';
+import type { CreateUserData } from '../api/teamMember/team_member';
 import UserCard from '../card/UserCard';
 import Error from '../component/common/Error';
 import Loading from '../component/common/Loading';
@@ -10,6 +11,7 @@ import Button from '../component/common/Button';
 import Dialog from '../component/common/Dialog';
 import { useState } from 'react';
 import DynamicForm from '../component/form/DynamicForm';
+import { toast } from 'react-toastify';
 
 export default function TeamMembers() {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
@@ -19,8 +21,39 @@ export default function TeamMembers() {
     queryFn: () => getSubUsers(1),
   });
 
+  const createUserMutation = useCreateUser();
+
   const handleRefresh = () => {
     refetch();
+  };
+
+  const handleCreateUser = async (formData: Record<string, any>) => {
+    try {
+      // Transform form data to match CreateUserData interface
+      const userData: CreateUserData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone || undefined,
+        gender: formData.gender || undefined,
+        country_id: formData.country_id ? Number(formData.country_id) : undefined,
+        role_id: Number(formData.role_id),
+        agency_id: formData.agency_id ? Number(formData.agency_id) : undefined,
+        record_status: formData.record_status ? Number(formData.record_status) : 1,
+      };
+
+      await createUserMutation.mutateAsync(userData);
+      
+      // Show success message
+      toast.success('User created successfully!');
+      
+      // Close dialog and refresh users list
+      setIsAddMemberDialogOpen(false);
+      refetch();
+    } catch (error: any) {
+      // Show error message
+      toast.error(error.message || 'Failed to create user');
+    }
   };
 
   if (isLoading) {
@@ -114,7 +147,7 @@ export default function TeamMembers() {
     },
     {
       name: "country_id",
-      type: "select",
+      type: "number",
       label: "Country",
       placeholder: "Select your country",
       required: false,
@@ -125,17 +158,11 @@ export default function TeamMembers() {
       },
       value: "",
       error: "",
-      options: [
-        { value: "jordan", label: "Jordan" },
-        { value: "saudi", label: "Saudi Arabia" },
-        { value: "kuwait", label: "Kuwait" },
-        { value: "qatar", label: "Qatar" },
-        { value: "oman", label: "Oman" },
-        { value: "bahrain", label: "Bahrain" },
-        { value: "emirates", label: "United Arab Emirates" },
-        { value: "other", label: "Other" },
-      ],
+      
     },
+    // Here we need make the role id is dynamic based on the Current User Role
+    // nobody can create a user with role id 1  (Super Admin)
+    // ooption Based on the Current User Role
     {
       name: "role_id",
       type: "number",
@@ -150,6 +177,9 @@ export default function TeamMembers() {
       value: "",
       error: "",
     },
+    // Here if the current user role is 1 (Super Admin) must be Insert agency id 
+    // and must be the agency is required
+    // else get the ageny_id from the current user
     {
       name: "agency_id",
       type: "number",
@@ -197,7 +227,12 @@ export default function TeamMembers() {
         fullScreen={false}
       >
         <div className="space-y-6">
-          <DynamicForm formFields={formFields} buttonTitle="Add Member" />
+          <DynamicForm 
+            formFields={formFields} 
+            buttonTitle="Add Member" 
+            onSubmit={handleCreateUser}
+            isLoading={createUserMutation.isPending}
+          />
         </div>
       </Dialog>
     </div>

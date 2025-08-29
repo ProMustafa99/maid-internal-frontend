@@ -20,10 +20,12 @@ interface DynamicFormProps {
   }>;
   onFormChange?: (formData: Record<string, any>) => void;
   onValidate?: (isValid: boolean, errors: Record<string, string>) => void;
+  onSubmit?: (formData: Record<string, any>) => void;
   buttonTitle: string;
+  isLoading?: boolean;
 }
 
-export default function DynamicForm({ formFields, onFormChange, onValidate, buttonTitle }: DynamicFormProps) {
+export default function DynamicForm({ formFields, onFormChange, onValidate, onSubmit, buttonTitle, isLoading = false }: DynamicFormProps) {
   const [formData, setFormData] = useState<Record<string, any>>(() => {
     const initialData: Record<string, any> = {};
     formFields.forEach(field => {
@@ -73,6 +75,10 @@ export default function DynamicForm({ formFields, onFormChange, onValidate, butt
     const isValid = Object.keys(newErrors).length === 0;
     onValidate?.(isValid, newErrors);
     
+    if (isValid && onSubmit) {
+      onSubmit(formData);
+    }
+    
     return isValid;
   };
 
@@ -111,12 +117,13 @@ export default function DynamicForm({ formFields, onFormChange, onValidate, butt
       {/* Validation Button */}
       <div className="mt-6">
         <Button
-          title={buttonTitle}
+          title={isLoading ? "Creating..." : buttonTitle}
           onClick={validateForm}
           color="primary"
           variant="solid"
           size="md"
           className="w-full"
+          disabled={isLoading}
         />
       </div>
     </div>
