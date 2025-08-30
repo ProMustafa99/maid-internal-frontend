@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { axiosInstance } from "./axiosInstance";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const getFieldsByPageId = async (page: number): Promise<any> => {
     try {      
@@ -27,4 +27,23 @@ export const getFieldsByPageId = async (page: number): Promise<any> => {
       enabled: !!page,
     });
   };
+
+export const getFieldsForEditPage = async (pageId: number, recordId: number, tableName: string): Promise<any> => {
+    try {      
+      const response = await axiosInstance.get(
+        `/fields/page/${pageId}/edit/${recordId}?table=${tableName}`
+      );
+      console.log("Fields for edit page fetch response", response);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          error.response?.data?.message || "Fields for edit page fetch failed"
+        );
+      }
+      throw error;
+    }
+  };
+
+
   

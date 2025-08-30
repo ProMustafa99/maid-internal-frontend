@@ -2,7 +2,7 @@ import type { User } from '../interface/users.interfcae'
 import Paragraph from '../component/common/Paragraph'
 import Header from '../component/common/Header'
 
-export default function UserCard({user}: {user: User}) {
+export default function UserCard({user, onViewDetails}: {user: User, onViewDetails: (user: User) => void}) {
   return (
     <div className="bg-white rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-all duration-200 shadow-sm hover:shadow-md">
         {/* Header Section */}
@@ -64,7 +64,10 @@ export default function UserCard({user}: {user: User}) {
         </div>
 
         {/* Action Button */}
-        <button className="w-full text-blue-600 hover:text-blue-700 font-medium py-2 text-sm transition-colors duration-200 border-t border-gray-100 pt-3">
+        <button 
+          onClick={() => onViewDetails(user)}
+          className="w-full text-blue-600 hover:text-blue-700 font-medium py-2 text-sm transition-colors duration-200 border-t border-gray-100 pt-3 hover:bg-blue-50 rounded-b-lg transition-all duration-200"
+        >
             View Details →
         </button>
     </div>

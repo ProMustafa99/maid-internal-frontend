@@ -10,6 +10,8 @@ import { AppProvider, type Navigation } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { DemoProvider, useDemoRouter } from '@toolpad/core/internal';
 import { useAuth } from '../context/auth-context';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from '../../pages/Dashboard';
 import Leads from '../../pages/Leads';
 import Maids from '../../pages/Maids';
@@ -163,6 +165,20 @@ export default function MainLayoutBasic(props: DemoProps) {
         </DashboardLayout>
       </AppProvider>
       {/* preview-end */}
+      
+      {/* Toast Container for notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </DemoProvider>
   );
 }

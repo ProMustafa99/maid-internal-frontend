@@ -99,8 +99,8 @@ const Dialog: React.FC<DialogProps> = ({
     <div className={`fixed inset-0 z-50 overflow-y-auto ${fullScreen ? 'z-[9999]' : ''}`}>
       {/* Backdrop */}
       <div 
-        className={`fixed inset-0 transition-opacity duration-300 ease-in-out ${
-          fullScreen ? 'bg-black bg-opacity-75' : 'bg-black bg-opacity-50'
+        className={`fixed inset-0 transition-opacity duration-300 ease-in-out backdrop-blur-sm ${
+          fullScreen ? 'bg-black/80' : 'bg-black/60'
         }`}
         onClick={handleBackdropClick}
       />
@@ -110,10 +110,10 @@ const Dialog: React.FC<DialogProps> = ({
         {/* Dialog Content */}
         <div
           ref={dialogRef}
-          className={`relative bg-white shadow-xl transform transition-all duration-300 ease-in-out ${
+          className={`relative bg-white shadow-2xl transform transition-all duration-300 ease-in-out ${
             fullScreen 
               ? 'w-full h-full rounded-none max-w-none' 
-              : `rounded-lg ${getMaxWidthClass()}`
+              : `rounded-2xl ${getMaxWidthClass()}`
           } ${className}`}
           tabIndex={-1}
           role="dialog"
@@ -122,36 +122,31 @@ const Dialog: React.FC<DialogProps> = ({
         >
           {/* Header */}
           {title && (
-            <div className={`flex items-center justify-between border-b border-gray-200 ${
+            <div className={`flex items-center justify-between ${
               fullScreen ? 'p-8' : 'p-6'
-            }`}>
+            } bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-2xl`}>
               <Header 
                 level="h2" 
                 size={fullScreen ? "2xl" : "lg"}
-                weight="semibold" 
+                weight="bold" 
                 color="default"
+                className="text-white"
               > 
                 {title}
               </Header>
-              <Button
-                title=""
+              <button
                 onClick={onClose}
-                hasBackground={false}
-                color="gray"
-                size="sm"
-                variant="ghost"
-                icon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                }
-                className="p-1 rounded-full hover:bg-gray-100"
-              />
+                className="text-white/80 hover:text-white transition-colors duration-200 p-2 hover:bg-white/10 rounded-full"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           )}
 
           {/* Body */}
-          <div className={fullScreen ? 'p-8' : 'p-6'}>
+          <div className={`${fullScreen ? 'p-8' : 'p-6'} bg-gray-50`}>
             {children}
           </div>
         </div>
