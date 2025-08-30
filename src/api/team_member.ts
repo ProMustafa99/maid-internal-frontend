@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { axiosInstance } from '../axiosInstance';
+import { axiosInstance } from './axiosInstance';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Interface for create user data based on CreateUserDto

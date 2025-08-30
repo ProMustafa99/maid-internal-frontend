@@ -1,27 +1,54 @@
 import { useQuery } from '@tanstack/react-query';
-import { getSubUsers, useCreateUser } from '../api/teamMember/team_member';
-import type { CreateUserData } from '../api/teamMember/team_member';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { getFieldsByPageId } from '../api/fields';
+import type { CreateUserData } from '../api/team_member';
+import { getSubUsers, useCreateUser } from '../api/team_member';
 import UserCard from '../card/UserCard';
-import Error from '../component/common/Error';
-import Loading from '../component/common/Loading';
-import type { User } from '../interface/users.interfcae';
-import Header from '../component/common/Header';
-import Paragraph from '../component/common/Paragraph';
 import Button from '../component/common/Button';
 import Dialog from '../component/common/Dialog';
-import { useState } from 'react';
+import Error from '../component/common/Error';
+import Header from '../component/common/Header';
+import Loading from '../component/common/Loading';
+import Paragraph from '../component/common/Paragraph';
 import DynamicForm from '../component/form/DynamicForm';
-import { toast } from 'react-toastify';
+import type { User } from '../interface/users.interfcae';
 
 export default function TeamMembers() {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
-  
+    
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: () => getSubUsers(1),
   });
 
+  const { data: fieldsData, isLoading: fieldsLoading, error: fieldsError } = useQuery({
+    queryKey: ['fields'],
+    queryFn: () => getFieldsByPageId(1),
+  });
+
+
+
+
   const createUserMutation = useCreateUser();
+
+  // Transform fields data to match DynamicForm interface
+  const formFields = fieldsData?.data?.map((field: any) => ({
+    name: field.name,
+    label: field.label || field.name,
+    type: field.type || 'text',
+    placeholder: field.placeholder || `Enter ${field.label || field.name}`,
+    validation: {
+      required: field.required || false,
+      minLength: field.minLength || 0,
+      maxLength: field.maxLength || 0,
+    },
+    value: undefined,
+    error: '',
+    options: field.type === 'select' && field.options ? 
+      field.options.map((opt: any) => ({ value: opt.value || opt, label: opt.label || opt })) : 
+      undefined,
+  })) || [];
 
   const handleRefresh = () => {
     refetch();
@@ -66,137 +93,7 @@ export default function TeamMembers() {
   }
 
   const users = data?.data?.users || [];
-  // const columns = data?.data?.columns || [];
-  // const totalPages = data?.data?.totalPages || 0;
-  // const currentPage = data?.data?.currentPage || 1;
-  // const count = data?.data?.count || 0;
 
-  const formFields = [
-    {
-      name: "name",
-      type: "text",
-      label: "Full Name",
-      placeholder: "Enter your full name",
-      required: true,
-      validation: {
-        required: true,
-        minLength: 1,
-        maxLength: 255,
-      },
-      value: "",
-      error: "",
-    },
-    {
-      name: "email",
-      type: "email",
-      label: "Email Address",
-      placeholder: "Enter your email",
-      required: true,
-      validation: {
-        required: true,
-        minLength: 1,
-        maxLength: 255,
-      },
-      value: "",
-      error: "",
-    },
-    {
-      name: "password",
-      type: "password",
-      label: "Password",
-      placeholder: "Enter your password",
-      required: true,
-      validation: {
-        required: true,
-        minLength: 9,
-        maxLength: 32,
-      },
-      value: "",
-      error: "",
-    },
-    {
-      name: "phone",
-      type: "tel",
-      label: "Phone Number",
-      placeholder: "Enter your phone number",
-      required: false,
-      validation: {
-        required: false,
-        minLength: 1,
-        maxLength: 20,
-      },
-      value: "",
-      error: "",
-    },
-    {
-      name: "gender",
-      type: "select",
-      label: "Gender",
-      placeholder: "Select your gender",
-      required: false,
-      validation: {
-        required: false,
-        minLength: 1,
-        maxLength: 10,
-      },
-      options: [
-        { value: "Female", label: "Female" },
-        { value: "Male", label: "Male" },
-      ],
-      value: "",
-      error: "",
-    },
-    {
-      name: "country_id",
-      type: "number",
-      label: "Country",
-      placeholder: "Select your country",
-      required: false,
-      validation: {
-        required: false,
-        minLength: 1,
-        maxLength: 999,
-      },
-      value: "",
-      error: "",
-      
-    },
-    // Here we need make the role id is dynamic based on the Current User Role
-    // nobody can create a user with role id 1  (Super Admin)
-    // ooption Based on the Current User Role
-    {
-      name: "role_id",
-      type: "number",
-      label: "Role ID",
-      placeholder: "Enter role ID",
-      required: true,
-      validation: {
-        required: true,
-        minLength: 1,
-        maxLength: 999,
-      },
-      value: "",
-      error: "",
-    },
-    // Here if the current user role is 1 (Super Admin) must be Insert agency id 
-    // and must be the agency is required
-    // else get the ageny_id from the current user
-    {
-      name: "agency_id",
-      type: "number",
-      label: "Agency ID",
-      placeholder: "Enter agency ID",
-      required: false,
-      validation: {
-        required: false,
-        minLength: 1,
-        maxLength: 999,
-      },
-      value: "",
-      error: "",
-    },
-  ];
-  
   return (
     <div className='p-6'>
       <div className="mb-6 flex justify-between items-center">
@@ -228,12 +125,18 @@ export default function TeamMembers() {
         fullScreen={false}
       >
         <div className="space-y-6">
-          <DynamicForm 
-            formFields={formFields} 
-            buttonTitle="Add Member" 
-            onSubmit={handleCreateUser}
-            isLoading={createUserMutation.isPending}
-          />
+          {fieldsLoading ? (
+            <Loading />
+          ) : fieldsError ? (
+            <Error error={fieldsError} handleRefresh={() => window.location.reload()} />
+          ) : (
+            <DynamicForm 
+              formFields={formFields} 
+              buttonTitle="Add Member" 
+              onSubmit={handleCreateUser}
+              isLoading={createUserMutation.isPending}
+            />
+          )}
         </div>
       </Dialog>
     </div>
