@@ -39,9 +39,23 @@ export const createUser = async (userData: CreateUserData): Promise<any> => {
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      throw new Error(
-        error.response?.data?.message || "User creation failed"
-      );
+      // Enhanced error handling with more specific error messages
+      const status = error.response?.status;
+      if (status === 403) {
+        throw new Error('You are not authorized to create users with this role');
+      } else if (status === 409) {
+        throw new Error(error.response?.data?.message || 'User with this email already exists');
+      } else if (status === 400) {
+        throw new Error(error.response?.data?.message || 'Invalid data provided');
+      } else if (status && status >= 500) {
+        throw new Error('Server error occurred. Please try again later.');
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        throw new Error('Network error. Please check your connection and try again.');
+      } else {
+        throw new Error(
+          error.response?.data?.message || "User creation failed"
+        );
+      }
     }
     throw error;
   }
