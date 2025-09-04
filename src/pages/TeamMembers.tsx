@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { getFieldsByPageId, getFieldsForEditPage } from '../api/fields';
 import type { CreateUserData, UpdateUserData } from '../api/team_member';
@@ -39,11 +39,7 @@ export default function TeamMembers() {
     enabled: !!selectedUser?.id, // Only run when we have a valid user ID
     staleTime: 0, // Always fetch fresh data
   });
-
   
-
-
-
   const createUserMutation = useCreateUser();
   const updateUserMutation = useUpdateUser();
 

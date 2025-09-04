@@ -87,33 +87,3 @@ class AuthAPI {
 }
 
 export const authAPI = new AuthAPI();
-
-
-// export const authAPI = {
-//   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-//     const response = await axiosInstance.post('/login', credentials);
-//     return {
-//       user: response.data.data,
-//       token: response.data.token,
-//       cookie: response.data.cookie,
-//     };
-//   },
-
-//   signup: async (credentials: SignupCredentials): Promise<SignupResponse> => {
-//     const response = await axiosInstance.post('/signup', credentials);
-//     return {
-//       user: response.data.data,
-//     };
-//   },
-
-//   logout: async (): Promise<void> => {
-//     const token = localStorage.getItem('token');
-//     if (token) {
-//       await axiosInstance.post('/logout', {}, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-//     }
-//   },
-// };
