@@ -1,11 +1,11 @@
 import { axiosInstance } from './axiosInstance';
 
-export interface LoginCredentials {
+export type LoginCredentials = {
   email: string;
   password: string;
 }
 
-export interface SignupCredentials {
+export type SignupCredentials = {
   email: string;
   password: string;
   name: string;
@@ -16,7 +16,7 @@ export interface SignupCredentials {
   agency_id?: number;
 }
 
-export interface LoginResponse {
+export type LoginResponse = {
   user: {
     id: number;
     name: string;
@@ -34,7 +34,7 @@ export interface LoginResponse {
   cookie?: string;
 }
 
-export interface SignupResponse {
+export type SignupResponse = {
   user: {
     id: number;
     name: string;
@@ -50,31 +50,70 @@ export interface SignupResponse {
   };
 }
 
-export const authAPI = {
-  login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
-    const response = await axiosInstance.post('/login', credentials);
+
+class AuthAPI {
+  private endPoints = {
+    login: '/login',
+    signup: '/signup',
+    logout: '/logout',
+  }
+
+  login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+    const response = await axiosInstance.post(this.endPoints.login, credentials);
     return {
       user: response.data.data,
       token: response.data.token,
       cookie: response.data.cookie,
     };
-  },
+  }
 
-  signup: async (credentials: SignupCredentials): Promise<SignupResponse> => {
-    const response = await axiosInstance.post('/signup', credentials);
+  signup = async (credentials: SignupCredentials): Promise<SignupResponse> => {
+    const response = await axiosInstance.post(this.endPoints.signup, credentials);
     return {
       user: response.data.data,
     };
-  },
+  }
 
-  logout: async (): Promise<void> => {
+  logout = async (): Promise<void> => {
     const token = localStorage.getItem('token');
     if (token) {
-      await axiosInstance.post('/logout', {}, {
+      await axiosInstance.post(this.endPoints.logout, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
     }
-  },
-};
+  }
+}
+
+export const authAPI = new AuthAPI();
+
+
+// export const authAPI = {
+//   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
+//     const response = await axiosInstance.post('/login', credentials);
+//     return {
+//       user: response.data.data,
+//       token: response.data.token,
+//       cookie: response.data.cookie,
+//     };
+//   },
+
+//   signup: async (credentials: SignupCredentials): Promise<SignupResponse> => {
+//     const response = await axiosInstance.post('/signup', credentials);
+//     return {
+//       user: response.data.data,
+//     };
+//   },
+
+//   logout: async (): Promise<void> => {
+//     const token = localStorage.getItem('token');
+//     if (token) {
+//       await axiosInstance.post('/logout', {}, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+//     }
+//   },
+// };
