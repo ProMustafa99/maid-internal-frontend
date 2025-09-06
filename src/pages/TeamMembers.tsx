@@ -44,22 +44,35 @@ export default function TeamMembers() {
   const updateUserMutation = useUpdateUser();
 
   // Transform fields data to match DynamicForm interface
-  const formFields = fieldsData?.data?.map((field: any) => ({
-    name: field.name,
-    label: field.label || field.name,
-    type: field.type || 'text',
-    placeholder: field.type === 'select' ? `Select ${field.label || field.name}` : `Enter ${field.label || field.name}`,
-    validation: {
-      required: field.required || false,
-      minLength: field.minLength || 0,
-      maxLength: field.maxLength || 0,
-    },
-    value: undefined,
-    error: '',
-    options: field.type === 'select' && field.options ? 
-      field.options.map((opt: any) => ({ value: opt.value || opt, label: opt.label || opt })) : 
-      undefined,
-  })) || [];
+  const formFields = fieldsData?.data?.map((field: any) => {
+    let placeholder = '';
+    if (field.type === 'select') {
+      placeholder = `Select ${field.label || field.name}`;
+    } else if (field.type === 'date') {
+      placeholder = ''; // No placeholder for date fields to avoid overlap
+    } else if (field.type === 'file') {
+      placeholder = ''; // No placeholder for file fields
+    } else {
+      placeholder = `Enter ${field.label || field.name}`;
+    }
+
+    return {
+      name: field.name,
+      label: field.label || field.name,
+      type: field.type || 'text',
+      placeholder,
+      validation: {
+        required: field.required || false,
+        minLength: field.minLength || 0,
+        maxLength: field.maxLength || 0,
+      },
+      value: undefined,
+      error: '',
+      options: field.type === 'select' && field.options ? 
+        field.options.map((opt: any) => ({ value: opt.value || opt, label: opt.label || opt })) : 
+        undefined,
+    };
+  }) || [];
 
   const formFieldsForEdit = fieldsDataForEdit?.data?.map((field: any) => ({
     name: field.name,

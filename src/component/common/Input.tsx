@@ -42,59 +42,97 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         className={className}
         sx={{
           '& .MuiOutlinedInput-root': {
-            borderRadius: '16px',
+            borderRadius: '8px',
             backgroundColor: 'white',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              backgroundColor: '#f8fafc',
-              transform: 'translateY(-2px)',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            },
-            '&.Mui-focused': {
-              backgroundColor: 'white',
-              transform: 'translateY(-1px)',
-              boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04)',
-            },
             '& fieldset': {
-              borderColor: error ? '#ef4444' : '#e2e8f0',
-              borderWidth: '2px',
-              transition: 'all 0.3s ease',
+              borderColor: error ? '#ef4444' : '#d1d5db',
+              borderWidth: '1px',
             },
             '&:hover fieldset': {
-              borderColor: error ? '#ef4444' : '#3b82f6',
-              borderWidth: '2px',
+              borderColor: error ? '#ef4444' : '#9ca3af',
             },
             '&.Mui-focused fieldset': {
               borderColor: error ? '#ef4444' : '#3b82f6',
-              borderWidth: '3px',
+              borderWidth: '2px',
             },
           },
           '& .MuiInputLabel-root': {
-            color: '#64748b',
+            color: '#6b7280',
             fontWeight: '500',
             fontSize: '0.875rem',
+            backgroundColor: 'white',
+            paddingLeft: '4px',
+            paddingRight: '4px',
             '&.Mui-focused': {
               color: error ? '#ef4444' : '#3b82f6',
-              fontWeight: '600',
+            },
+            '&.MuiInputLabel-shrink': {
+              transform: 'translate(14px, -9px) scale(0.75)',
             },
           },
           '& .MuiFormHelperText-root': {
             marginLeft: '4px',
             fontSize: '0.75rem',
             fontWeight: '500',
+            marginTop: '4px',
             '&.Mui-error': {
               color: '#ef4444',
-              fontWeight: '600',
             },
           },
           '& .MuiInputBase-input': {
             padding: size === 'small' ? '12px 16px' : '16px 20px',
             fontSize: size === 'small' ? '0.875rem' : '1rem',
             fontWeight: '500',
-            color: '#1e293b',
+            color: '#1f2937',
             '&::placeholder': {
-              color: '#94a3b8',
+              color: '#9ca3af',
               opacity: 1,
+              fontSize: size === 'small' ? '0.875rem' : '1rem',
+            },
+          },
+          // Special styling for date inputs
+          '& input[type="date"]': {
+            '&::-webkit-calendar-picker-indicator': {
+              color: '#6b7280',
+              fontSize: '1.2rem',
+              cursor: 'pointer',
+            },
+            '&::-webkit-datetime-edit': {
+              padding: '0',
+            },
+            '&::-webkit-datetime-edit-fields-wrapper': {
+              padding: '0',
+            },
+            '&::-webkit-datetime-edit-text': {
+              color: '#9ca3af',
+              padding: '0 4px',
+            },
+            '&::-webkit-datetime-edit-month-field': {
+              color: '#1f2937',
+            },
+            '&::-webkit-datetime-edit-day-field': {
+              color: '#1f2937',
+            },
+            '&::-webkit-datetime-edit-year-field': {
+              color: '#1f2937',
+            },
+          },
+          // Special styling for file inputs
+          '& input[type="file"]': {
+            padding: '8px 0',
+            '&::-webkit-file-upload-button': {
+              backgroundColor: '#f3f4f6',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              padding: '8px 16px',
+              marginRight: '12px',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: '#374151',
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: '#e5e7eb',
+              },
             },
           },
         }}

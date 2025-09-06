@@ -3,7 +3,7 @@ import { axiosInstance } from './axiosInstance';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Interface for create user data based on CreateUserDto
-export interface CreateUserData {
+export type CreateUserData = {
   name: string;
   email: string;
   password?: string;
@@ -16,7 +16,7 @@ export interface CreateUserData {
 }
 
 // Interface for update user data
-export interface UpdateUserData {
+export type UpdateUserData = {
   name?: string;
   email?: string;
   password?: string;

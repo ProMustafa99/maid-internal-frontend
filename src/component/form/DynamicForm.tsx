@@ -82,35 +82,73 @@ export default function DynamicForm({ formFields, onFormChange, onValidate, onSu
     return isValid;
   };
 
+  // Group fields into pairs for two-column layout
+  const fieldPairs = [];
+  for (let i = 0; i < formFields.length; i += 2) {
+    fieldPairs.push(formFields.slice(i, i + 2));
+  }
+
   return (
     <div className="">
-      {formFields.map((field) => (
-        <div key={field.name} className="mb-4">
-          {field.type === 'select' ? (
-            <Select
-              label={field.label}
-              name={field.name}
-              value={formData[field.name] || ''}
-              options={field.options || []}
-              placeholder={field.placeholder}
-              required={field.validation.required}
-              className="mb-4"
-              error={hasValidated ? errors[field.name] || '' : field.error}
-              onChange={(e) => handleInputChange(field.name, e.target.value)}
-            />
-          ) : (
-            <Input
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              placeholder={field.placeholder}
-              required={field.validation.required}
-              className="mb-4"
-              value={formData[field.name] || ''}
-              error={hasValidated ? errors[field.name] || '' : field.error}
-              onChange={(e) => handleInputChange(field.name, e.target.value)}
-            />
-          )}
+      {fieldPairs.map((pair, pairIndex) => (
+        <div key={pairIndex} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {pair.map((field) => (
+            <div key={field.name}>
+              {field.type === 'select' ? (
+                <Select
+                  label={field.label}
+                  name={field.name}
+                  value={formData[field.name] || ''}
+                  options={field.options || []}
+                  placeholder={field.placeholder}
+                  required={field.validation.required}
+                  className="mb-4"
+                  error={hasValidated ? errors[field.name] || '' : field.error}
+                  onChange={(e) => handleInputChange(field.name, e.target.value)}
+                />
+              ) : field.type === 'textarea' ? (
+                <div className="md:col-span-2">
+                  <Input
+                    label={field.label}
+                    name={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    required={field.validation.required}
+                    className="mb-4"
+                    value={formData[field.name] || ''}
+                    error={hasValidated ? errors[field.name] || '' : field.error}
+                    onChange={(e) => handleInputChange(field.name, e.target.value)}
+                  />
+                </div>
+              ) : field.type === 'file' ? (
+                <div className="md:col-span-2">
+                  <Input
+                    label={field.label}
+                    name={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    required={field.validation.required}
+                    className="mb-4"
+                    value={formData[field.name] || ''}
+                    error={hasValidated ? errors[field.name] || '' : field.error}
+                    onChange={(e) => handleInputChange(field.name, e.target.value)}
+                  />
+                </div>
+              ) : (
+                <Input
+                  label={field.label}
+                  name={field.name}
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  required={field.validation.required}
+                  className="mb-4"
+                  value={formData[field.name] || ''}
+                  error={hasValidated ? errors[field.name] || '' : field.error}
+                  onChange={(e) => handleInputChange(field.name, e.target.value)}
+                />
+              )}
+            </div>
+          ))}
         </div>
       ))}
       

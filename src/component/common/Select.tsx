@@ -43,43 +43,29 @@ export default function Select({
       className={className}
       sx={{
         '& .MuiOutlinedInput-root': {
-          borderRadius: '16px',
+          borderRadius: '8px',
           backgroundColor: 'white',
-          transition: 'all 0.3s ease',
-          '&:hover': {
-            backgroundColor: '#f8fafc',
-            transform: 'translateY(-2px)',
-            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          },
-          '&.Mui-focused': {
-            backgroundColor: 'white',
-            transform: 'translateY(-1px)',
-            boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04)',
-          },
           '& fieldset': {
-            borderColor: error ? '#ef4444' : '#e2e8f0',
-            borderWidth: '2px',
-            transition: 'all 0.3s ease',
+            borderColor: error ? '#ef4444' : '#d1d5db',
+            borderWidth: '1px',
           },
           '&:hover fieldset': {
-            borderColor: error ? '#ef4444' : '#3b82f6',
-            borderWidth: '2px',
+            borderColor: error ? '#ef4444' : '#9ca3af',
           },
           '&.Mui-focused fieldset': {
             borderColor: error ? '#ef4444' : '#3b82f6',
-            borderWidth: '3px',
+            borderWidth: '2px',
           },
         },
         '& .MuiInputLabel-root': {
-          color: '#64748b',
+          color: '#6b7280',
           fontWeight: '500',
           fontSize: '0.875rem',
           '&.Mui-focused': {
             color: error ? '#ef4444' : '#3b82f6',
-            fontWeight: '600',
           },
           '&.MuiFormLabel-filled': {
-            color: '#64748b',
+            color: '#6b7280',
           },
         },
         '& .MuiFormHelperText-root': {
@@ -88,14 +74,13 @@ export default function Select({
           fontWeight: '500',
           '&.Mui-error': {
             color: '#ef4444',
-            fontWeight: '600',
           },
         },
         '& .MuiSelect-select': {
           padding: '16px 20px',
           fontSize: '1rem',
           fontWeight: '500',
-          color: '#1e293b',
+          color: '#1f2937',
         },
       }}
     >
@@ -111,9 +96,9 @@ export default function Select({
         MenuProps={{
           PaperProps: {
             sx: {
-              borderRadius: '12px',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+              border: '1px solid #d1d5db',
             }
           }
         }}

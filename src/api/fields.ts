@@ -1,18 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { axiosInstance } from "./axiosInstance";
-
-
-
 class Fields {
   private endPoints = {
-    getFieldsByPageId: "/fields/page/:pageId",
+    getFieldsByPageId: "/fields/page/",
     getFieldsForEditPage: "/fields/page/:pageId/edit/:recordId",
   };
 
-  public getFieldsByPageId = async (page: number): Promise<any> => {
+  public getFieldsByPageId = async (pageId: number): Promise<any> => {
     try {
-      const response = await axiosInstance.get(this.endPoints.getFieldsByPageId, { params: { page } });
+      const response = await axiosInstance.get(`/fields/page/${pageId}`);
       console.log("Fields by page ID fetch response", response);
       return response.data;
     } catch (error) {
@@ -50,6 +46,6 @@ class Fields {
 export const fieldsAPI = new Fields();
 
 // Export individual functions for backward compatibility
-export const getFieldsByPageId = (page: number) => fieldsAPI.getFieldsByPageId(page);
+export const getFieldsByPageId = (pageId: number) => fieldsAPI.getFieldsByPageId(pageId);
 export const getFieldsForEditPage = (pageId: number, recordId: number, tableName: string) => 
   fieldsAPI.getFieldsForEditPage(pageId, recordId, tableName);
