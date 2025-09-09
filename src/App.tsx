@@ -1,6 +1,8 @@
 import { AuthProvider, useAuth } from "./component/context/auth-context";
 import MainLayoutBasic from "./component/mainLayout/MainLayoutBasic";
 import LoginPage from "./pages/LoginPage";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import MaidsForm from "./pages/MaidsForm";
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -17,7 +19,15 @@ function AppContent() {
     return <LoginPage />;
   }
 
-  return <MainLayoutBasic />;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/add-maids" element={<MaidsForm />} />
+        <Route path="/*" element={<MainLayoutBasic />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default function App() {

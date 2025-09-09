@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import { getFieldsByPageId } from '../api/fields';
 import Header from "../component/common/Header";
 import Paragraph from "../component/common/Paragraph";
@@ -14,6 +15,7 @@ import { maidsTableColumns, maidsTableRows } from "../locally/tableData";
 
 export default function Maids() {
   const [isAddMaidDialogOpen, setIsAddMaidDialogOpen] = useState(false);
+  const navigate = useNavigate();
     
   const { data: fieldsData, isLoading: fieldsLoading, error: fieldsError, refetch: refetchFields } = useQuery({
     queryKey: ['fields', 2],
@@ -67,8 +69,9 @@ export default function Maids() {
         <Button 
           title="Add New Maid" 
           onClick={() => {
-            setIsAddMaidDialogOpen(true);
-            refetchFields(); // Fetch fields when dialog opens
+            // setIsAddMaidDialogOpen(true);
+            // refetchFields(); // Fetch fields when dialog opens
+            navigate('/maids/add-maids');
           }}
           color="primary"
           size="lg"
