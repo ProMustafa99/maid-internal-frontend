@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getFieldsByPageId } from "../api/fields";
-import Paragraph from "../component/common/Paragraph";
-import Header from "../component/common/Header";
-import DynamicForm from "../component/form/DynamicForm";
 import { toast } from "react-toastify";
+import { getFieldsByPageId } from "../api/fields";
+import Error from "../component/common/Error";
+import Loading from "../component/common/Loading";
+import DynamicForm from "../component/form/DynamicForm";
 
 export default function MaidsForm() {
   const {
@@ -14,7 +14,7 @@ export default function MaidsForm() {
   } = useQuery({
     queryKey: ["fields", 2],
     queryFn: () => getFieldsByPageId(2),
-    enabled: false, // Don't fetch automatically
+    enabled: true, // Enable automatic fetching
   });
 
   // Transform fields data to match DynamicForm interface
@@ -58,21 +58,24 @@ export default function MaidsForm() {
   };
   return (
     <div className="">
-      <div className="mb-10">
-        <Header level="h1" size="2xl" weight="bold" color="default" truncate>
-          Maids Management
-        </Header>
-        <Paragraph size="md" color="muted">
-          Manage maid profiles and their information
-        </Paragraph>
-      </div>
+     
 
-      <DynamicForm
-        formFields={formFields}
-        buttonTitle="Add Maid"
-        onSubmit={handleCreateMaid}
-        isLoading={false}
-      />
+      {fieldsLoading ? (
+        <div className="flex justify-center items-center py-12">
+          <Loading />
+        </div>
+      ) : fieldsError ? (
+        <Error error={fieldsError} handleRefresh={() => window.location.reload()} />
+      ) : (
+        <DynamicForm
+          formFields={formFields}
+          buttonTitle="Add Maid"
+          onSubmit={handleCreateMaid}
+          isLoading={false}
+          title="Add New Maid"
+          description="Please fill in the maid's information below"
+        />
+      )}
     </div>
   );
 }
