@@ -1,14 +1,10 @@
 import axios from "axios";
 import { axiosInstance } from "./axiosInstance";
 class Fields {
-  private endPoints = {
-    getFieldsByPageId: "/fields/page/",
-    getFieldsForEditPage: "/fields/page/:pageId/edit/:recordId",
-  };
 
-  public getFieldsByPageId = async (pageId: number): Promise<any> => {
+  public getFieldsByPageId = async (pageId: number, useg_slug: string = 'create'): Promise<any> => {
     try {
-      const response = await axiosInstance.get(`/fields/page/${pageId}`);
+      const response = await axiosInstance.get(`/fields/page/${pageId}?useg_slug=${useg_slug}`);
       console.log("Fields by page ID fetch response", response);
       return response.data;
     } catch (error) {
@@ -46,6 +42,6 @@ class Fields {
 export const fieldsAPI = new Fields();
 
 // Export individual functions for backward compatibility
-export const getFieldsByPageId = (pageId: number) => fieldsAPI.getFieldsByPageId(pageId);
+export const getFieldsByPageId = (pageId: number, useg_slug: string = 'create') => fieldsAPI.getFieldsByPageId(pageId, useg_slug);
 export const getFieldsForEditPage = (pageId: number, recordId: number, tableName: string) => 
   fieldsAPI.getFieldsForEditPage(pageId, recordId, tableName);

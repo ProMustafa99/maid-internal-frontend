@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getFieldsByPageId, getFieldsForEditPage } from '../api/fields';
-import type { CreateUserData, UpdateUserData } from '../api/team_member';
-import { getSubUsers, useCreateUser, useUpdateUser } from '../api/team_member';
+import { getFieldsByPageId, getFieldsForEditPage } from '../api/fields.api';
+import type { CreateUserData, UpdateUserData } from '../api/team_member.api';
+import { getSubUsers, useCreateUser, useUpdateUser } from '../api/team_member.api';
 import UserCard from '../card/UserCard';
 import Button from '../component/common/Button';
 import Dialog from '../component/common/Dialog';

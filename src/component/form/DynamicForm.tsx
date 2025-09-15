@@ -184,6 +184,7 @@ export default function DynamicForm({ formFields, onFormChange, onValidate, onSu
                     value={formData[field.name] || ''}
                     error={hasValidated ? errors[field.name] || '' : field.error}
                     onChange={(e) => handleInputChange(field.name, e.target.value)}
+                    {...(field.type === 'number' && { min: "1", max: "100" })}
                   />
                 )}
               </div>
