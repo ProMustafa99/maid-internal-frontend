@@ -54,21 +54,21 @@ export default function Maids() {
   });
 
   // Table columns for maids
-  const maidsTableColumns = [
-    "id",
-    "name",
-    "gender",
-    "religion",
-    "age",
-    "nationality_id",
-    "price",
-    "salary",
-    "actions",
-  ];
+  // const maidsTableColumns = [
+  //   "id",
+  //   "name",
+  //   "gender",
+  //   "religion",
+  //   "age",
+  //   "nationality_id",
+  //   "price",
+  //   "salary",
+  //   "actions",
+  // ];
 
   // Transform maids data for table
   const maidsTableRows =
-    maidsData?.data?.map((maid: Maid) => ({
+    maidsData?.data?.maids?.map((maid: Maid) => ({
       ...maid,
       actions: (
         <div className="flex space-x-2">
@@ -171,7 +171,7 @@ export default function Maids() {
             handleRefresh={() => window.location.reload()}
           />
         ) : (
-          <DynamicTable columns={maidsTableColumns} rows={maidsTableRows} />
+          <DynamicTable columns={maidsData?.data?.columns || []} rows={maidsTableRows} />
         )}
       </div>
 

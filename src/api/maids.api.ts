@@ -81,7 +81,12 @@ export interface Maid {
 export interface MaidsResponse {
   success: boolean;
   message: string;
-  data: Maid[];
+  data: {
+    columns: string[];
+    maids: Maid[];
+    total: number;
+    totalPages: number;
+  };
   pagination?: {
     currentPage: number;
     totalPages: number;
