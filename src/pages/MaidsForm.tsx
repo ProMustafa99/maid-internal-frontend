@@ -5,10 +5,15 @@ import { getFieldsByPageId } from "../api/fields.api";
 import { createMaid, type CreateMaidData } from "../api/maids.api";
 import Loading from "../component/common/Loading";
 import DynamicForm from "../component/form/DynamicForm";
+import SkillsSelector from "../component/common/SkillsSelector";
+// import LanguagesSelector from "../component/common/LanguagesSelector";
+import { useState } from "react";
 
 export default function MaidsForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
+  const [selectedLanguages, setSelectedLanguages] = useState<number[]>([]);
 
   const {
     data: fieldsData,
@@ -148,6 +153,8 @@ export default function MaidsForm() {
         height: formData.height ? parseInt(formData.height) : undefined,
         weight: formData.weight ? parseInt(formData.weight) : undefined,
         contact_number: formData.contact_number?.toString() || "",
+        skills: selectedSkills,
+        // languages: selectedLanguages,
       };
 
       console.log("Sending maid data:", maidData);
@@ -158,23 +165,77 @@ export default function MaidsForm() {
     }
   };
   return (
-    <div className="">
-     
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Add New Maid</h1>
+        <p className="text-gray-600 mb-6">
+          {fieldsError ? "Using default form fields. Please fill in the maid's information below." : "Please fill in the maid's information below"}
+        </p>
 
-      {fieldsLoading ? (
-        <div className="flex justify-center items-center py-12">
-          <Loading />
-        </div>
-      ) : (
-        <DynamicForm
-          formFields={formFields}
-          buttonTitle="Add Maid"
-          onSubmit={handleCreateMaid}
-          isLoading={createMaidMutation.isPending}
-          title="Add New Maid"
-          description={fieldsError ? "Using default form fields. Please fill in the maid's information below." : "Please fill in the maid's information below"}
-        />
-      )}
+        {fieldsLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <Loading />
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Basic Information Form */}
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+              <DynamicForm
+                formFields={formFields}
+                buttonTitle=""
+                onSubmit={() => {}} // We'll handle this in the parent
+                isLoading={false}
+                title=""
+                description=""
+                hideSubmitButton={true}
+              />
+            </div>
+
+            {/* Skills & Languages Selection */}
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Skills & Languages</h2>
+              <div className="space-y-6">
+                <SkillsSelector
+                  selectedSkills={selectedSkills}
+                  onSkillsChange={setSelectedSkills}
+                  disabled={createMaidMutation.isPending}
+                  maxSkills={10}
+                />
+                {/* <LanguagesSelector
+                  selectedLanguages={selectedLanguages}
+                  onLanguagesChange={setSelectedLanguages}
+                  disabled={createMaidMutation.isPending}
+                  maxLanguages={5}
+                /> */}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={() => {
+                  // Get form data from the DynamicForm
+                  const formElement = document.querySelector('form');
+                  if (formElement) {
+                    const formData = new FormData(formElement);
+                    const data: Record<string, any> = {};
+                    formData.forEach((value, key) => {
+                      data[key] = value;
+                    });
+                    handleCreateMaid(data);
+                  }
+                }}
+                disabled={createMaidMutation.isPending || selectedSkills.length === 0}
+                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {createMaidMutation.isPending ? 'Creating Maid...' : 'Add Maid'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

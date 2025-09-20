@@ -27,9 +27,10 @@ interface DynamicFormProps {
   isLoading?: boolean;
   title?: string;
   description?: string;
+  hideSubmitButton?: boolean;
 }
 
-export default function DynamicForm({ formFields, onFormChange, onValidate, onSubmit, buttonTitle, isLoading = false, title, description }: DynamicFormProps) {
+export default function DynamicForm({ formFields, onFormChange, onValidate, onSubmit, buttonTitle, isLoading = false, title, description, hideSubmitButton = false }: DynamicFormProps) {
   const [formData, setFormData] = useState<Record<string, any>>(() => {
     const initialData: Record<string, any> = {};
     formFields.forEach(field => {
@@ -110,15 +111,17 @@ export default function DynamicForm({ formFields, onFormChange, onValidate, onSu
               size="lg"
               className="w-full sm:w-auto min-w-[120px] border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200"
             />
-            <Button
-              title={isLoading ? "Creating..." : buttonTitle}
-              onClick={validateForm}
-              color="primary"
-              variant="solid"
-              size="lg"
-              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 min-w-[200px]"
-              disabled={isLoading}
-            />
+            {!hideSubmitButton && (
+              <Button
+                title={isLoading ? "Creating..." : buttonTitle}
+                onClick={validateForm}
+                color="primary"
+                variant="solid"
+                size="lg"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 min-w-[200px]"
+                disabled={isLoading}
+              />
+            )}
           </div>
         </div>
       </div>

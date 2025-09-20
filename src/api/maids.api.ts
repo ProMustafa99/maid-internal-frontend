@@ -21,6 +21,8 @@ export interface CreateMaidData {
   height?: number;
   weight?: number;
   contact_number?: string;
+  skills: number[];
+  // languages?: number[];
 }
 
 export interface UpdateMaidData {
